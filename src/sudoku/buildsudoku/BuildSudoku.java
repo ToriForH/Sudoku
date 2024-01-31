@@ -1,4 +1,4 @@
-package sudoku.build;
+package sudoku.buildsudoku;
 
 import sudoku.logic.SudokuLogic;
 import sudoku.base.LocalStorage;
@@ -8,7 +8,7 @@ import sudoku.userinterface.Controller;
 
 import java.io.IOException;
 
-public class BuildLogic {
+public class BuildSudoku {
     public static void build(UserInterface userInterface) throws IOException {
         SudokuGame initialState;
         LocalStorage storage = new LocalStorage();

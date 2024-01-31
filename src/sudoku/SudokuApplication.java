@@ -2,7 +2,7 @@ package sudoku;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import sudoku.build.BuildLogic;
+import sudoku.buildsudoku.BuildSudoku;
 import sudoku.userinterface.UserInterface;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class SudokuApplication extends Application{
     public void start(Stage primaryStage) throws Exception {
         userInterface = new UserInterface(primaryStage);
         try {
-            BuildLogic.build(userInterface);
+            BuildSudoku.build(userInterface);
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
