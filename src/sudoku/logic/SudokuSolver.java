@@ -4,12 +4,14 @@ import sudoku.base.SudokuGame;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sudoku.base.SudokuGame.GRID_BOUNDARY;
+
 public class SudokuSolver {
-    public static boolean sudokuIsSolvable(int[][] sudokuGrid) {
-        int[][] copyOfGrid = new int[SudokuGenerator.SUDOKU_BOUNDARY][SudokuGenerator.SUDOKU_BOUNDARY];
+    static boolean sudokuIsSolvable(int[][] sudokuGrid) {
+        int[][] copyOfGrid = new int[GRID_BOUNDARY][GRID_BOUNDARY];
         SudokuGame.copySudokuArrayValues(sudokuGrid, copyOfGrid);
         List<List<Integer>> availableNumbers = new ArrayList<>();
-        for (int i = 0; i < (SudokuGenerator.SUDOKU_BOUNDARY * SudokuGenerator.SUDOKU_BOUNDARY); i++) {
+        for (int i = 0; i < (GRID_BOUNDARY * GRID_BOUNDARY); i++) {
             int x = i % 9;
             int y = i / 9;
             List<Integer> numbers = new ArrayList<>();
@@ -53,8 +55,8 @@ public class SudokuSolver {
 
     private static List<Integer> fillListWithSudokuGrid(int[][] sudokuGrid) {
         List<Integer> list = new ArrayList<>();
-        for (int x = 0; x < SudokuGenerator.SUDOKU_BOUNDARY; x++) {
-            for (int y = 0; y < SudokuGenerator.SUDOKU_BOUNDARY; y++) {
+        for (int x = 0; x < GRID_BOUNDARY; x++) {
+            for (int y = 0; y < GRID_BOUNDARY; y++) {
                 list.add(sudokuGrid[x][y]);
             }
         }

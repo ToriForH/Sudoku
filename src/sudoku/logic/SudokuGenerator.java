@@ -7,18 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static sudoku.base.SudokuGame.GRID_BOUNDARY;
+
 public class SudokuGenerator {
     private static final Random RANDOM = new Random();
-    public static final int SUDOKU_BOUNDARY = SudokuGame.GRID_BOUNDARY;
     public static SudokuCell[][] getNewSudokuGrid() {
         int[][] sudokuArray = unsolveSudoku(getSolvedSudoku());
         return SudokuCell.arrayToSudokuCellGrid(sudokuArray);
     }
 
     private static int[][] getSolvedSudoku() {
-        int[][] solvedSudoku = new int[SUDOKU_BOUNDARY][SUDOKU_BOUNDARY];
+        int[][] solvedSudoku = new int[GRID_BOUNDARY][GRID_BOUNDARY];
         List<List<Integer>> availableNumbers = new ArrayList<>();
-        for (int i = 0; i < (SUDOKU_BOUNDARY * SUDOKU_BOUNDARY); i++) {
+        for (int i = 0; i < (GRID_BOUNDARY * GRID_BOUNDARY); i++) {
             List<Integer> numbers = new ArrayList<>();
             addSudokuNumbersToList(numbers);
             availableNumbers.add(numbers);
@@ -43,12 +44,12 @@ public class SudokuGenerator {
     }
 
     private static int[][] unsolveSudoku(int[][] solvedSudoku) {
-        int[][] unsolvedSudoku = new int[SUDOKU_BOUNDARY][SUDOKU_BOUNDARY];
+        int[][] unsolvedSudoku = new int[GRID_BOUNDARY][GRID_BOUNDARY];
         SudokuGame.copySudokuArrayValues(solvedSudoku, unsolvedSudoku);
         int index = 0;
         while (index < 42) {
-            int x = RANDOM.nextInt(SUDOKU_BOUNDARY);
-            int y = RANDOM.nextInt(SUDOKU_BOUNDARY);
+            int x = RANDOM.nextInt(GRID_BOUNDARY);
+            int y = RANDOM.nextInt(GRID_BOUNDARY);
             if (unsolvedSudoku[x][y] != 0) {
                 int temp = unsolvedSudoku[x][y];
                 unsolvedSudoku[x][y] = 0;
@@ -62,8 +63,8 @@ public class SudokuGenerator {
         return unsolvedSudoku;
     }
 
-    public static void addSudokuNumbersToList(List<Integer> list) {
-        for (int value = 1; value <= SUDOKU_BOUNDARY; value++) {
+    static void addSudokuNumbersToList(List<Integer> list) {
+        for (int value = 1; value <= GRID_BOUNDARY; value++) {
             list.add(value);
         }
     }

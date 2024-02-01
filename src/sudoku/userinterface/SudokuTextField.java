@@ -28,15 +28,7 @@ public class SudokuTextField extends TextField implements Serializable {
         }
     }
 
-    @Override
-    public void replaceSelection(String s) {
-        if(!s.matches("[0-9]")) {
-            super.replaceSelection(s);
-        }
-    }
-
-    @Override
-    public SudokuTextField clone(){
+    public SudokuTextField getCopy(){
         return new SudokuTextField(this.x, this.y);
     }
 

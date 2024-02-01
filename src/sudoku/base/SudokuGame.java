@@ -28,7 +28,7 @@ public class SudokuGame implements Serializable {
     public static void copySudokuGridValues(SudokuCell[][] oldGrid, SudokuCell[][] newGrid) {
         for (int x = 0; x < GRID_BOUNDARY; x++) {
             for (int y = 0; y < GRID_BOUNDARY; y++) {
-                newGrid[x][y] = oldGrid[x][y].clone();
+                newGrid[x][y] = oldGrid[x][y].getCopy();
             }
         }
     }

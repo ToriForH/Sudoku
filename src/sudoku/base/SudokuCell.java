@@ -53,9 +53,8 @@ public class SudokuCell implements Serializable {
         return array;
     }
 
-    @Override
-    protected SudokuCell clone() {
-        SudokuTextField copyTextField = this.textField.clone();
+    public SudokuCell getCopy(){
+        SudokuTextField copyTextField = this.textField.getCopy();
         return new SudokuCell(copyTextField, this.value, this.isMutable);
     }
 

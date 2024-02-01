@@ -6,6 +6,8 @@ import sudoku.base.SudokuGame;
 
 import java.util.*;
 
+import static sudoku.base.SudokuGame.GRID_BOUNDARY;
+
 public class SudokuLogic {
     public static SudokuGame getNewSudoku() {
         SudokuCell [][] newSudokuGrid = SudokuGenerator.getNewSudokuGrid();
@@ -13,26 +15,22 @@ public class SudokuLogic {
     }
 
     public static SudokuState checkForCompletion(SudokuCell[][] grid) {
-        if (sudokuIsInvalid(grid)) return SudokuState.ACTIVE;
-        if (gridHasEmptyCells(grid)) return SudokuState.ACTIVE;
+        int[][] gridAsArray = SudokuCell.SudokuGridToArray(grid);
+        if (sudokuIsInvalid(gridAsArray)) return SudokuState.ACTIVE;
+        if (gridHasEmptyCells(gridAsArray)) return SudokuState.ACTIVE;
         return SudokuState.COMPLETE;
     }
 
-    public static boolean sudokuIsInvalid(SudokuCell[][] grid) {
-        int[][] gridAsArray = SudokuCell.SudokuGridToArray(grid);
-        return sudokuIsInvalid(gridAsArray);
-    }
-
-    public static boolean sudokuIsInvalid(int[][] grid) {
+    static boolean sudokuIsInvalid(int[][] grid) {
         if (rowsOrColumnsAreInvalid(grid)) return true;
         return squaresAreInvalid(grid);
     }
 
     private static boolean rowsOrColumnsAreInvalid(int[][] grid) {
         List<List<Integer>> columns = new ArrayList<>();
-        for (int x = 0; x < SudokuGame.GRID_BOUNDARY; x++) {
+        for (int x = 0; x < GRID_BOUNDARY; x++) {
             List <Integer> row = new ArrayList<>();
-            for (int y = 0; y < SudokuGame.GRID_BOUNDARY; y++) {
+            for (int y = 0; y < GRID_BOUNDARY; y++) {
                 columns.add(new ArrayList<>());
                 if(grid[x][y] > 0) {
                     row.add(grid[x][y]);
@@ -49,9 +47,9 @@ public class SudokuLogic {
 
     private static boolean squaresAreInvalid(int[][] grid) {
         List<List<Integer>> squares = new ArrayList<>();
-        for(int x = 0; x < SudokuGenerator.SUDOKU_BOUNDARY; x++) {
-            for(int y = 0; y < SudokuGenerator.SUDOKU_BOUNDARY; y++) {
-                if (squares.size() < SudokuGenerator.SUDOKU_BOUNDARY) {
+        for(int x = 0; x < GRID_BOUNDARY; x++) {
+            for(int y = 0; y < GRID_BOUNDARY; y++) {
+                if (squares.size() < GRID_BOUNDARY) {
                     squares.add(new ArrayList<>());
                 }
                 int squareIndex = (x / 3) + ((y / 3) * 3);
@@ -71,10 +69,10 @@ public class SudokuLogic {
         return set.size() < list.size();
     }
 
-    private static boolean gridHasEmptyCells(SudokuCell[][] grid) {
-        for (int xIndex = 0; xIndex < SudokuGame.GRID_BOUNDARY; xIndex++) {
-            for (int yIndex = 0; yIndex < SudokuGame.GRID_BOUNDARY; yIndex++) {
-                if (grid[xIndex][yIndex].getValue() == 0) return true;
+    private static boolean gridHasEmptyCells(int[][] grid) {
+        for (int x = 0; x < GRID_BOUNDARY; x++) {
+            for (int y = 0; y < GRID_BOUNDARY; y++) {
+                if (grid[x][y] == 0) return true;
             }
         }
         return false;

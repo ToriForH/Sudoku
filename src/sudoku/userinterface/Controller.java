@@ -18,12 +18,11 @@ public class Controller {
         this.userInterface = userInterface;
     }
 
-    public void inputToCell(int x, int y, int input) {
+    void inputToCell(int x, int y, int input) {
         try {
             SudokuGame gameData = storage.getGameData();
             SudokuCell[][] newSudokuGrid = gameData.getCopyOfSudokuGrid();
             newSudokuGrid[x][y].setValue(input);
-
             gameData = new SudokuGame(SudokuLogic.checkForCompletion(newSudokuGrid), newSudokuGrid);
             storage.updateGameData(gameData);
             userInterface.updateCell(x, y, input);
@@ -35,7 +34,7 @@ public class Controller {
 
     }
 
-    public void startNewGame() {
+    void startNewGame() {
         try {
             storage.updateGameData(SudokuLogic.getNewSudoku());
             userInterface.updateBoard(storage.getGameData());

@@ -1,5 +1,7 @@
 package sudoku.userinterface;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -7,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
@@ -14,24 +17,21 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import sudoku.base.Coordinates;
 import sudoku.base.SudokuGame;
 import sudoku.constants.Messages;
-
-import java.util.HashMap;
 
 public class UserInterface implements EventHandler<KeyEvent> {
     private final Stage stage;
     private final Group root;
-    private HashMap<Coordinates, SudokuTextField> textFieldCoordinates;
+    private final SudokuTextField[][] textFieldGrid;
     private Controller controller;
     private static final double BOARD_PADDING = 30;
     private static final Color WINDOW_BACKGROUD_COLOR = Color.rgb(191, 48, 120);
     private static final Color BOARD_BACKGROUD_COLOR = Color.rgb(240, 125, 182);
     private static final Color LINE_COLOR = Color.rgb(166, 7, 73);
     private static final double CELL_SIDE_SIZE = 50;
-    private static final double BOARD_SIDE_SIZE = CELL_SIDE_SIZE * 9;
-    private static final String TEXT_STYLE = "-fx-text-fill: rgb(112, 10, 70)";
+    private static final double BOARD_SIDE_SIZE = CELL_SIDE_SIZE * SudokuGame.GRID_BOUNDARY;
+    private static final String TEXT_STYLE = "-fx-text-fill: rgb(112, 10, 70); -fx-highlight-fill: null; -fx-highlight-text-fill: null;";
     private static final Font TITLE_FONT = new Font("Constantia",30);
     private static final double WINDOW_X = BOARD_PADDING * 2 + BOARD_SIDE_SIZE;
     private static final double WINDOW_Y = WINDOW_X + TITLE_FONT.getSize() + BOARD_PADDING;
@@ -41,11 +41,11 @@ public class UserInterface implements EventHandler<KeyEvent> {
     public UserInterface(Stage stage) {
         this.stage = stage;
         this.root = new Group();
-        this.textFieldCoordinates = new HashMap<>();
-        initializeUserInterface();
+        this.textFieldGrid = new SudokuTextField[SudokuGame.GRID_BOUNDARY][SudokuGame.GRID_BOUNDARY];
+        setUserInterface();
     }
 
-    private void initializeUserInterface() {
+    private void setUserInterface() {
         setBackground(root);
         setTitle(root);
         setBoard(root);
@@ -84,8 +84,8 @@ public class UserInterface implements EventHandler<KeyEvent> {
 
     private void setTextFields(Group root) {
         final double cellSize = CELL_SIDE_SIZE;
-        for (int x = 0; x < 9; x++) {
-            for (int y = 0; y < 9; y++) {
+        for (int x = 0; x < SudokuGame.GRID_BOUNDARY; x++) {
+            for (int y = 0; y < SudokuGame.GRID_BOUNDARY; y++) {
                 double xLayout = BOARD_PADDING + x * cellSize;
                 double yLayout = BOARD_PADDING + y * cellSize;
                 SudokuTextField cell = new SudokuTextField(x, y);
@@ -97,7 +97,7 @@ public class UserInterface implements EventHandler<KeyEvent> {
                 cell.setPrefWidth(CELL_SIDE_SIZE);
                 cell.setBackground(Background.EMPTY);
                 cell.setOnKeyPressed(this);
-                textFieldCoordinates.put(new Coordinates(x, y), cell);
+                textFieldGrid[x][y] = cell;
                 root.getChildren().add(cell);
             }
         }
@@ -143,8 +143,8 @@ public class UserInterface implements EventHandler<KeyEvent> {
         this.controller = controller;
     }
 
-    public void updateCell(int x, int y, int input) {
-        SudokuTextField cell = textFieldCoordinates.get(new Coordinates(x, y));
+    void updateCell(int x, int y, int input) {
+        SudokuTextField cell = textFieldGrid[x][y];
         String value = Integer.toString(input);
         if (value.equals("0")) value = "";
         cell.textProperty().setValue(value);
@@ -153,7 +153,7 @@ public class UserInterface implements EventHandler<KeyEvent> {
     public void updateBoard(SudokuGame game) {
         for (int x = 0; x < 9; x++) {
             for (int y = 0; y < 9; y++) {
-                TextField cell = textFieldCoordinates.get(new Coordinates(x, y));
+                TextField cell = textFieldGrid[x][y];
                 String value = Integer.toString(game.getCopyOfSudokuGrid()[x][y].getValue());
                 if (value.equals("0")) value = "";
                 cell.setText(value);
@@ -169,7 +169,7 @@ public class UserInterface implements EventHandler<KeyEvent> {
         }
     }
 
-    public void showMessage(Messages message) {
+    void showMessage(Messages message) {
         Alert.AlertType type = Alert.AlertType.CONFIRMATION;
         if (message == Messages.ERROR) type = Alert.AlertType.ERROR;
         Alert dialog = new Alert(type, message.getMessage(), ButtonType.OK);
@@ -181,10 +181,18 @@ public class UserInterface implements EventHandler<KeyEvent> {
     public void handle(KeyEvent keyEvent) {
         if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
             SudokuTextField eventSource = (SudokuTextField) keyEvent.getSource();
+            eventSource.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+                    if (!newValue.matches("\\d")) {
+                        eventSource.setText(newValue.replaceAll("\\D", ""));
+                    }
+                }
+            });
             int value = 0;
             if (keyEvent.getText().matches("[0-9]")) value = Integer.parseInt(keyEvent.getText());
-            //else if (eventSource.getText().matches("[0-9]")) value = Integer.parseInt(eventSource.getText());
-            eventSource.setText("");
+            else if (keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.SPACE) value = 0;
+            else if (eventSource.getText().matches("[0-9]")) value = Integer.parseInt(eventSource.getText());
             controller.inputToCell(eventSource.getX(), eventSource.getY(), value);
         }
         keyEvent.consume();
