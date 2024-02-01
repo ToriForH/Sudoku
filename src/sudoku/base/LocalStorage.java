@@ -3,7 +3,7 @@ package sudoku.base;
 import java.io.*;
 
 public class LocalStorage {
-    private static final File GAME_DATA = new File(System.getProperty("user.home"), "sudokudata.xml");
+    private static final File GAME_DATA = new File(System.getProperty("user.home"), "sudokudata");
 
     public void updateGameData(SudokuGame sudokuGame) throws IOException {
         try {
