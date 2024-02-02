@@ -30,7 +30,7 @@ public class SudokuSolver {
                 int y = i / 9;
                 if(copyOfGrid[x][y] == 0) {
                     if(availableNumbers.get(i).size() == 1) { //every puzzle must have only 1 solution
-                        copyOfGrid[x][y] = availableNumbers.get(i).getFirst();
+                        copyOfGrid[x][y] = availableNumbers.get(i).get(0);
                     } else {
                         for(int j = 0; j < availableNumbers.get(i).size(); j++) {
                             copyOfGrid[x][y] = availableNumbers.get(i).get(j);

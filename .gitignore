@@ -5,6 +5,12 @@ out/
 
 manifest.txt
 *.xml
+.idea/
+module-info.java
+resources/
+mvnw
+*.cmd
+target
 
 ### Eclipse ###
 .apt_generated
